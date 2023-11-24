@@ -21,23 +21,29 @@ midnight_to_morning_price = 20
 
 
 def park(parking_slot: ParkingSlot):
-    f = open(f'parking_slots/{parking_slot.identity}.txt', "x")
-    f.writelines([
-        f'{parking_slot.identity}\n',
-        f'{parking_slot.arrival_time}\n',
-        f'{parking_slot.frequent_parking_number}',
-    ])
-    f.close()
+    try:
+        f = open(f'parking_slots/{parking_slot.identity}.txt', "x")
+        f.writelines([
+            f'{parking_slot.identity}\n',
+            f'{parking_slot.arrival_time}\n',
+            f'{parking_slot.frequent_parking_number}',
+        ])
+        f.close()
+    except:
+        raise Exception('The car has not been picked up')
 
 
 def pickup(identity: str):
-    f = open(f'parking_slots/{identity}.txt', "r")
-    identity = f.readline().replace('\n', '')
-    arrival_time = f.readline().replace('\n', '')
-    frequent_parking_number = f.readline().replace('\n', '')
-    f.close()
-    parking_slot = ParkingSlot(identity, arrival_time, frequent_parking_number,
-                               datetime.now().strftime('%Y-%m-%d %H:%M'))
+    try:
+        f = open(f'parking_slots/{identity}.txt', "r")
+        identity = f.readline().replace('\n', '')
+        arrival_time = f.readline().replace('\n', '')
+        frequent_parking_number = f.readline().replace('\n', '')
+        f.close()
+        parking_slot = ParkingSlot(identity, arrival_time, frequent_parking_number,
+                                   datetime.now().strftime('%Y-%m-%d %H:%M'))
+    except:
+        raise Exception('The car is not in parking area')
 
     price = get_price(parking_slot)
 
@@ -141,8 +147,12 @@ def get_time_list(start_time: datetime, end_time: datetime):
     return times
 
 def get_history(identity: str):
-    f3 = open(f'histories/{identity}.txt', 'r')
-    history = f3.read()
-    f3.close()
+    try:
+        f3 = open(f'histories/{identity}.txt', 'r')
+        history = f3.read()
+        f3.close()
 
-    return history
+        return history
+    except:
+        raise Exception('The history is not found')
+
